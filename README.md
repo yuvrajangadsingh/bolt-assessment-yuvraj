@@ -1,6 +1,6 @@
 # Bolt Assessment - D&D 5e API Integration
 
-This is a Spring Boot application that integrates with the D&D 5e API to provide information about various game resources.
+This is a Spring Boot application that integrates with the D&D 5e API to provide information about various game resources. The application implements caching to improve performance and reduce API calls.
 
 ## Project Overview
 
@@ -9,6 +9,8 @@ The application provides REST API endpoints that fetch data from the D&D 5e API,
 - Summary of total resources (classes, spells, monsters, features)
 - Detailed information about specific D&D classes
 
+All API responses are cached to improve performance and reduce load on the D&D 5e API.
+
 ## Technologies Used
 
 - Java 11
@@ -16,12 +18,13 @@ The application provides REST API endpoints that fetch data from the D&D 5e API,
 - Maven
 - Lombok
 - Spring Web
+- Spring Cache
 
 ## API Endpoints
 
 ### GET /api/summary
 
-Returns a summary of D&D 5e resources with the following information:
+Returns a cached summary of D&D 5e resources with the following information:
 
 ```json
 {
@@ -34,7 +37,7 @@ Returns a summary of D&D 5e resources with the following information:
 
 ### GET /api/classes/{className}
 
-Returns detailed information about a specific D&D class:
+Returns cached detailed information about a specific D&D class:
 
 ```json
 {
@@ -67,6 +70,14 @@ Returns detailed information about a specific D&D class:
   ]
 }
 ```
+
+## Caching Strategy
+
+The application implements the following caching strategies:
+
+- `apiSummary`: Caches the summary of all resources
+- `classDetails`: Caches individual class details using the class name as the key
+- `apiCounts`: Caches the count of resources for each endpoint
 
 ## Getting Started
 
