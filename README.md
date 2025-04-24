@@ -19,6 +19,23 @@ All API responses are cached to improve performance and reduce load on the D&D 5
 - Lombok
 - Spring Web
 - Spring Cache
+- JUnit 5
+- Mockito
+
+## Configuration
+
+The application can be configured through `application.properties`:
+
+```properties
+# Application name
+spring.application.name=assessment
+
+# D&D API configuration
+dnd.api.base-url=https://www.dnd5eapi.co/api/2014
+
+# Cache configuration
+spring.cache.type=simple
+```
 
 ## Installation
 
@@ -130,13 +147,47 @@ The application implements the following caching strategies:
 - `classDetails`: Caches individual class details using the class name as the key
 - `apiCounts`: Caches the count of resources for each endpoint
 
-## Development
+The cache type is configured as `simple` in-memory cache.
+
+## Error Handling
+
+The application handles the following scenarios:
+
+- 404 Not Found: When a requested D&D class does not exist
+- 500 Internal Server Error: For other unexpected errors
+
+## Testing
+
+The application includes comprehensive unit tests using JUnit 5 and Mockito. The test suite covers:
+
+### Controller Tests (`DndControllerTest`)
+
+- `getSummary_ShouldReturnApiSummary`: Verifies the summary endpoint returns correct counts
+- `getClassDetails_ShouldReturnClassDetails`: Verifies the class details endpoint returns correct class information
+
+### Service Tests (`DndApiServiceTest`)
+
+- `getApiSummary_ShouldReturnCorrectCounts`: Verifies the service correctly aggregates counts from all endpoints
+- `getClassDetails_ShouldReturnClassDetails`: Verifies the service correctly fetches and returns class details
+- `getClassDetails_WhenApiFails_ShouldReturnNull`: Verifies proper error handling for non-existent classes
 
 ### Running Tests
 
 ```bash
+# Run all tests
 mvn test
+
+# Run tests with detailed output
+mvn test -Dtest=*Test
+
+# Run specific test class
+mvn test -Dtest=DndControllerTest
+
+# Run specific test method
+mvn test -Dtest=DndControllerTest#getSummary_ShouldReturnApiSummary
 ```
+
+## Development
 
 ### Building for Production
 
@@ -171,4 +222,11 @@ src/main/java/com/bolt/assessment/
     ├── Option.java
     ├── Proficiency.java
     └── ProficiencyChoice.java
+
+src/test/java/com/bolt/assessment/
+├── controller/
+│   └── DndControllerTest.java
+├── service/
+│   └── DndApiServiceTest.java
+└── AssessmentApplicationTests.java
 ```
