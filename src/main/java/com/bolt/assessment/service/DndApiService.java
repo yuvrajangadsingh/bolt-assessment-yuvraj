@@ -1,8 +1,9 @@
 package com.bolt.assessment.service;
 
 import com.bolt.assessment.model.ApiSummary;
-import com.bolt.assessment.model.ClassDetail; 
+import com.bolt.assessment.model.ClassDetail;
 import com.bolt.assessment.model.DndApiResponse;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -15,6 +16,7 @@ public class DndApiService {
         this.restTemplate = new RestTemplate();
     }
 
+    @Cacheable("apiSummary")
     public ApiSummary getApiSummary() {
         ApiSummary summary = new ApiSummary();
         
@@ -26,11 +28,13 @@ public class DndApiService {
         return summary;
     }
 
+    @Cacheable(value = "classDetails", key = "#className")
     public ClassDetail getClassDetails(String className) {
         String url = BASE_URL + "/classes/" + className;
         return restTemplate.getForObject(url, ClassDetail.class);
     }
 
+    @Cacheable(value = "apiCounts", key = "#endpoint")
     private int getCount(String endpoint) {
         String url = BASE_URL + endpoint;
         DndApiResponse response = restTemplate.getForObject(url, DndApiResponse.class);
