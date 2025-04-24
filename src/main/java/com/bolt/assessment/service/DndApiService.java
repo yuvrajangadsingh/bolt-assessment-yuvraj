@@ -3,13 +3,16 @@ package com.bolt.assessment.service;
 import com.bolt.assessment.model.ApiSummary;
 import com.bolt.assessment.model.ClassDetail;
 import com.bolt.assessment.model.DndApiResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
 public class DndApiService {
-    private static final String BASE_URL = "https://www.dnd5eapi.co/api/2014";
+    @Value("${dnd.api.base-url}")
+    private String baseUrl;
+    
     private final RestTemplate restTemplate;
 
     public DndApiService() {
@@ -30,13 +33,13 @@ public class DndApiService {
 
     @Cacheable(value = "classDetails", key = "#className")
     public ClassDetail getClassDetails(String className) {
-        String url = BASE_URL + "/classes/" + className;
+        String url = baseUrl + "/classes/" + className;
         return restTemplate.getForObject(url, ClassDetail.class);
     }
 
     @Cacheable(value = "apiCounts", key = "#endpoint")
     private int getCount(String endpoint) {
-        String url = BASE_URL + endpoint;
+        String url = baseUrl + endpoint;
         DndApiResponse response = restTemplate.getForObject(url, DndApiResponse.class);
         return response != null ? response.getCount() : 0;
     }
