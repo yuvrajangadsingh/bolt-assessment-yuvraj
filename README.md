@@ -20,11 +20,54 @@ All API responses are cached to improve performance and reduce load on the D&D 5
 - Spring Web
 - Spring Cache
 
+## Installation
+
+### Prerequisites
+
+- Java 11 JDK
+- Maven 3.6 or higher
+- Git
+
+### Setup Steps
+
+1. Clone the repository:
+
+```bash
+git clone <repository-url>
+cd bolt-assessment
+```
+
+2. Build the project:
+
+```bash
+mvn clean install
+```
+
+3. Run the application:
+
+```bash
+mvn spring-boot:run
+```
+
+The application will start on port 8080. You can verify it's running by visiting:
+
+```
+http://localhost:8080/api/summary
+```
+
 ## API Endpoints
 
 ### GET /api/summary
 
 Returns a cached summary of D&D 5e resources with the following information:
+
+#### Example Request
+
+```bash
+curl -X GET http://localhost:8080/api/summary
+```
+
+#### Example Response
 
 ```json
 {
@@ -38,6 +81,14 @@ Returns a cached summary of D&D 5e resources with the following information:
 ### GET /api/classes/{className}
 
 Returns cached detailed information about a specific D&D class:
+
+#### Example Request
+
+```bash
+curl -X GET http://localhost:8080/api/classes/barbarian
+```
+
+#### Example Response
 
 ```json
 {
@@ -79,26 +130,27 @@ The application implements the following caching strategies:
 - `classDetails`: Caches individual class details using the class name as the key
 - `apiCounts`: Caches the count of resources for each endpoint
 
-## Getting Started
+## Development
 
-### Prerequisites
-
-- Java 11
-- Maven
-
-### Building the Project
+### Running Tests
 
 ```bash
-mvn clean install
+mvn test
 ```
 
-### Running the Application
+### Building for Production
 
 ```bash
-mvn spring-boot:run
+mvn clean package
 ```
 
-The application will start on the default port 8080.
+The executable JAR will be created in the `target` directory.
+
+### Running the Production JAR
+
+```bash
+java -jar target/assessment-0.0.1-SNAPSHOT.jar
+```
 
 ## Project Structure
 
