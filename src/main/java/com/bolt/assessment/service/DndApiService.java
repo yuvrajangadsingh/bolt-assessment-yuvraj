@@ -1,6 +1,7 @@
 package com.bolt.assessment.service;
 
 import com.bolt.assessment.model.ApiSummary;
+import com.bolt.assessment.model.ClassDetail; 
 import com.bolt.assessment.model.DndApiResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -23,6 +24,11 @@ public class DndApiService {
         summary.setTotalFeatures(getCount("/features"));
         
         return summary;
+    }
+
+    public ClassDetail getClassDetails(String className) {
+        String url = BASE_URL + "/classes/" + className;
+        return restTemplate.getForObject(url, ClassDetail.class);
     }
 
     private int getCount(String endpoint) {
