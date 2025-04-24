@@ -5,7 +5,9 @@ import com.bolt.assessment.model.ClassDetail;
 import com.bolt.assessment.model.DndApiResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
@@ -33,8 +35,15 @@ public class DndApiService {
 
     @Cacheable(value = "classDetails", key = "#className")
     public ClassDetail getClassDetails(String className) {
-        String url = baseUrl + "/classes/" + className;
-        return restTemplate.getForObject(url, ClassDetail.class);
+        try {
+            String url = baseUrl + "/classes/" + className;
+            return restTemplate.getForObject(url, ClassDetail.class);
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+                return null;
+            }
+            throw e;
+        }
     }
 
     @Cacheable(value = "apiCounts", key = "#endpoint")
