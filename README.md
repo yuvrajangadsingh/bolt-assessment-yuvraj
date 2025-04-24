@@ -1,15 +1,13 @@
 # Bolt Assessment - D&D 5e API Integration
 
-This is a Spring Boot application that integrates with the D&D 5e API to provide summary information about various game resources.
+This is a Spring Boot application that integrates with the D&D 5e API to provide information about various game resources.
 
 ## Project Overview
 
-The application provides a REST API endpoint that fetches and summarizes data from the D&D 5e API, including:
+The application provides REST API endpoints that fetch data from the D&D 5e API, including:
 
-- Total number of classes
-- Total number of spells
-- Total number of monsters
-- Total number of features
+- Summary of total resources (classes, spells, monsters, features)
+- Detailed information about specific D&D classes
 
 ## Technologies Used
 
@@ -31,6 +29,42 @@ Returns a summary of D&D 5e resources with the following information:
   "totalSpells": number,
   "totalMonsters": number,
   "totalFeatures": number
+}
+```
+
+### GET /api/classes/{className}
+
+Returns detailed information about a specific D&D class:
+
+```json
+{
+  "name": "string",
+  "hit_die": number,
+  "proficiency_choices": [
+    {
+      "choose": number,
+      "type": "string",
+      "from": {
+        "option_set_type": "string",
+        "options": [
+          {
+            "item": {
+              "index": "string",
+              "name": "string",
+              "url": "string"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "saving_throws": [
+    {
+      "index": "string",
+      "name": "string",
+      "url": "string"
+    }
+  ]
 }
 ```
 
@@ -66,6 +100,12 @@ src/main/java/com/bolt/assessment/
 │   └── DndApiService.java
 └── model/
     ├── ApiSummary.java
+    ├── ClassDetail.java
     ├── DndApiResponse.java
-    └── DndResource.java
+    ├── DndResource.java
+    ├── From.java
+    ├── Item.java
+    ├── Option.java
+    ├── Proficiency.java
+    └── ProficiencyChoice.java
 ```
